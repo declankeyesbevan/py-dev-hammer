@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.6.1, pytest-3.3.1, py-1.5.2, pluggy-0.6.0
+rootdir: devops, inifile:
+plugins: cov-2.5.1
+collected 3 items
+
+tests/test_devops.py ...                                                 [100%]
+
+ generated xml file: devops/tests/logs/pytest.xml
+
+---------- coverage: platform darwin, python 3.6.1-final-0 -----------
+Name                 Stmts   Miss  Cover   Missing
+--------------------------------------------------
+devops/__init__.py       1      0   100%
+devops/devops.py        20      0   100%
+--------------------------------------------------
+TOTAL                       21      0   100%
+
+=========================== 3 passed in 0.06 seconds ===========================
