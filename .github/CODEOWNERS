@@ -3,12 +3,3 @@
 
 # Default owners for everything in the repo
 *               @declankeyesbevan
-
-# tests
-/tests/         @declankeyesbevan
-
-# utils
-/utils/         @declankeyesbevan
-
-# py_dev_hammer
-/you_ni/        @declankeyesbevan

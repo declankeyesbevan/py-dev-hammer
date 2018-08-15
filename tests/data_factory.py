@@ -5,10 +5,10 @@ import decimal
 import os
 
 from tests import TEST_RESOURCES_DIR
-from utils.utils import load_config_file
+from utils.general import load_config_file
 
-APP_CONFIG = load_config_file(os.path.join(TEST_RESOURCES_DIR, 'app_config.yml'))
-USER_CONFIG = load_config_file(os.path.join(TEST_RESOURCES_DIR, 'user_config.yml'))
+APP_CONFIG = load_config_file(os.path.join(TEST_RESOURCES_DIR, 'app_config_test.yml'))
+USER_CONFIG = load_config_file(os.path.join(TEST_RESOURCES_DIR, 'user_config_test.yml'))
 REGION = 'ap-southeast-2'
 GITHUB_TOKEN = '297045966567'
 PROJECT_NAME = 'some-cool-name'
@@ -40,7 +40,7 @@ TEST_PARAM_DICT_PYTEST_FAIL = {
 }
 TEST_PARAM_DICT_PYLINT = {
     'test_type': 'pylint',
-    'input_file': os.path.join(TEST_RESOURCES_DIR, 'pylint_log'),
+    'input_file': os.path.join(TEST_RESOURCES_DIR, 'pylint.static'),
     'regex_pattern': '.*?(\\d+.\\d+)/10$',
     'message': 'Pylint score',
     'multiplier': 10,
@@ -77,5 +77,3 @@ DYNAMO_ITEMS = [
         'pylint': decimal.Decimal('90')
     }
 ]
-PARSER = argparse.ArgumentParser()
-PARSER.add_argument('--config')

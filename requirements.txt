@@ -1,4 +1,1 @@
--r utils/requirements.txt
-
-pypandoc==1.4
-requests==2.18.4
+.

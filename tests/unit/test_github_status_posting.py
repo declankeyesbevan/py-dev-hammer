@@ -3,11 +3,9 @@
 # pylint: disable=missing-docstring, no-self-use, invalid-name
 
 import os
-
 from unittest.mock import patch, MagicMock
 
 import pytest
-
 from requests.exceptions import MissingSchema
 
 from py_dev_hammer.github_status_posting import (
@@ -21,18 +19,18 @@ from tests.data_factory import (
     APP_CONFIG, USER_CONFIG, CODEBUILD_BUILD_ARN, CODE_BUILD_BUILD_URL, CODEBUILD_GIT_BRANCH,
     CODEBUILD_SOURCE_VERSION, TEST_PARAM_DICT_PYTEST_PASS, TEST_PARAM_DICT_PYTEST_FAIL,
     TEST_PARAM_DICT_PYLINT, TEST_PARAM_DICT_MISSING_FILE, GITHUB_PAYLOAD, DYNAMO_PAYLOAD,
-    BUILD_START_TIME_FIRST_RUN, DYNAMO_ITEMS, PARSER,
+    BUILD_START_TIME_FIRST_RUN, DYNAMO_ITEMS,
 )
-from utils.errors import GeneralError
-from utils.utils import get_certs
+from py_dev_hammer.utils.errors import GeneralError
+from py_dev_hammer.utils.general import get_certs
 
 MODULE_UNDER_TEST = 'py_dev_hammer.github_status_posting'
 
 
 class TestGithubStatusPosting(object):
 
-    @patch('{}.load_config_file'.format(MODULE_UNDER_TEST))
     @patch('{}.APP_CONFIG'.format(MODULE_UNDER_TEST), APP_CONFIG)
+    @patch('{}.USER_CONFIG'.format(MODULE_UNDER_TEST), USER_CONFIG)
     @patch('{}._create_test_parameters_dict'.format(MODULE_UNDER_TEST))
     @patch(
         '{}._parse_url_from_arn'.format(MODULE_UNDER_TEST),
@@ -40,16 +38,14 @@ class TestGithubStatusPosting(object):
     )
     @patch('{}._execute'.format(MODULE_UNDER_TEST))
     @patch('logging.Logger.error')
-    def test_entry_point(self, mock_logger, mock_execute, mock_parameters_dict, mock_config_file):
-        args = PARSER.parse_args(['--config', os.path.join(TEST_RESOURCES_DIR, 'user_config.yml')])
-        entry_point(args)
-        assert mock_config_file.called
+    def test_entry_point(self, mock_logger, mock_execute, mock_parameters_dict):
+        entry_point()
         assert mock_parameters_dict.called
         assert os.environ['REQUESTS_CA_BUNDLE'] == get_certs()
         assert mock_execute.called
 
         mock_execute.side_effect = GeneralError()
-        entry_point(args)
+        entry_point()
         assert "GeneralError in GitHub Status Posting" in str(mock_logger.mock_calls)
 
     @patch('{}._parse_pytest'.format(MODULE_UNDER_TEST), new=MagicMock(return_value=('success', 1)))
@@ -66,10 +62,6 @@ class TestGithubStatusPosting(object):
         new=MagicMock(return_value=DYNAMO_ITEMS)
     )
     @patch(
-        '{}.epoch_time'.format(MODULE_UNDER_TEST),
-        new=MagicMock(return_value=BUILD_START_TIME_FIRST_RUN)
-    )
-    @patch(
         '{}._create_github_payloads'.format(MODULE_UNDER_TEST),
         new=MagicMock(return_value=[GITHUB_PAYLOAD])
     )
@@ -79,7 +71,10 @@ class TestGithubStatusPosting(object):
         (TEST_PARAM_DICT_PYLINT, CODE_BUILD_BUILD_URL),
     ])
     def test_execute(self, mock_github, param_dict, url):
-        _execute(USER_CONFIG, [param_dict], url)
+        _execute(
+            USER_CONFIG, [param_dict], url, APP_CONFIG['tests_to_run']['dynamic'],
+            APP_CONFIG['tests_to_run']['static']
+        )
         assert mock_github.called
 
     @patch('{}.APP_CONFIG'.format(MODULE_UNDER_TEST), APP_CONFIG)
@@ -97,7 +92,8 @@ class TestGithubStatusPosting(object):
 
     @patch.dict(os.environ, {'CODEBUILD_GIT_BRANCH': CODEBUILD_GIT_BRANCH})
     @patch('{}.connect_to_aws_resource'.format(MODULE_UNDER_TEST), new=MagicMock())
-    @patch('{}.put_item_with_partition_and_sort_key'.format(MODULE_UNDER_TEST), new=MagicMock())
+    @patch('{}.APP_CONFIG'.format(MODULE_UNDER_TEST), APP_CONFIG)
+    @patch('{}.put_with_partition_and_sort_key'.format(MODULE_UNDER_TEST), new=MagicMock())
     @patch('{}.get_items_by_partition_key'.format(MODULE_UNDER_TEST))
     def test_maintain_state_in_dynamo(self, mock_items_partition_key):
         _maintain_state_in_dynamo(USER_CONFIG, BUILD_START_TIME_FIRST_RUN, DYNAMO_PAYLOAD)
