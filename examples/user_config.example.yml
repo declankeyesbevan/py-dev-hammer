@@ -1,0 +1,7 @@
+github:
+  repo: 'cool-project-bro'
+code_build:
+  project_name: 'cool-project-bro'
+aws_general:
+  region_name: 'ap-southeast-2'
+  verify: True

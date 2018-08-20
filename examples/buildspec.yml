@@ -1,0 +1,34 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase
+      - pip install virtualenv
+      - virtualenv -p python3 env
+      - . env/bin/activate
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase
+      - export PYTHONPATH=`pwd`
+      - >
+        export CODEBUILD_GIT_BRANCH=`git branch -a --contains HEAD |
+        sed -n 2p | awk '{ printf $1 }'`
+      - export CONFIG_DIR=py_dev_hammer_config
+      - export TESTS_DIR=$CODEBUILD_SRC_DIR/build/static_analysis
+      - mkdir -p $TESTS_DIR
+  build:
+    commands:
+      - echo Entered the build phase
+      - pylint -f parseable cool_project_bro | tee $TESTS_DIR/pylint.static
+      - radon cc cool_project_bro -a -na | tee $TESTS_DIR/radon_cc.static
+      - linecounter -d cool_project_bro --filter .py --noempty | tee $TESTS_DIR/line_counter.static
+      - >
+        py.test --cov-report term-missing --cov=cool_project_bro --junit-xml=$TESTS_DIR/pytest.xml |
+        tee $TESTS_DIR/pytest.static
+      - python run_github_status_posting.py
+  post_build:
+    commands:
+      - echo Build completed on `date`

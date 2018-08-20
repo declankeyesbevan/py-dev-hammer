@@ -99,3 +99,19 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# jetbrains
+.idea/*
+
+# macOS
+.DS_Store
+
+# config
+config/app_config.yml
+config/user_config.yml
+
+# cache
+.pytest_cache/
+
+# build
+upload_dist.sh
