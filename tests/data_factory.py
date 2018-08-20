@@ -1,11 +1,10 @@
 """This provides a common set of test data for unit, integration and functional tests."""
 
-import argparse
 import decimal
 import os
 
 from tests import TEST_RESOURCES_DIR
-from utils.general import load_config_file
+from py_dev_hammer.utils.general import load_config_file
 
 APP_CONFIG = load_config_file(os.path.join(TEST_RESOURCES_DIR, 'app_config_test.yml'))
 USER_CONFIG = load_config_file(os.path.join(TEST_RESOURCES_DIR, 'user_config_test.yml'))

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 This carries out dynamic and static code analysis and POSTs the results to GitHub as statuses.
 Without passing statuses, a pull request cannot be merged. Dynamic tests require 100% passing to be
@@ -79,10 +76,10 @@ def _execute(user_config, test_parameters, target_url, dynamic_test_types, stati
 
 
 def _parse_url_from_arn(user_config):
-    logger.info(f"Parsing URL from ARN: {os.environ['CODEBUILD_BUILD_ARN']}")
+    logger.info(f"Parsing URL from ARN: {os.environ.get('CODEBUILD_BUILD_ARN')}")
 
     line_regex = re.compile(r'.*/.*:(.+)')
-    line_parse = re.match(line_regex, os.environ['CODEBUILD_BUILD_ARN'])
+    line_parse = re.match(line_regex, os.environ.get('CODEBUILD_BUILD_ARN'))
     return APP_CONFIG['code_build']['root_url'].format(
         region=user_config['aws_general']['region_name'],
         project_name=user_config['code_build']['project_name'],
@@ -119,7 +116,7 @@ def _maintain_state_in_dynamo(user_config, build_start_time, dynamo_payload):
     logger.info("Maintaining state in DynamoDB")
 
     branch_parse = re.match(
-        re.compile(r'(remotes/origin/)*(.+)'), os.environ['CODEBUILD_GIT_BRANCH'])
+        re.compile(r'(remotes/origin/)*(.+)'), os.environ.get('CODEBUILD_GIT_BRANCH'))
     branch_name = branch_parse.group(2)
 
     resource = connect_to_aws_resource('dynamodb', user_config)
@@ -228,7 +225,7 @@ def _post_to_github_status(data, user_config):
     url = APP_CONFIG['github']['api_url'].format(
         owner=ssm_parameters.get('github_owner'),
         repo=user_config['github']['repo'],
-        commit_sha=os.environ['CODEBUILD_SOURCE_VERSION']
+        commit_sha=os.environ.get('CODEBUILD_SOURCE_VERSION')
     )
     headers = {"Authorization": f"token {ssm_parameters.get('github_token')}"}
 
@@ -238,7 +235,3 @@ def _post_to_github_status(data, user_config):
         raise GeneralError(f"POST to GitHub MissingSchema Exception: {sch_exc}")
     else:
         logger.info(f"POST Response Code: {response.status_code}")
-
-
-if __name__ == '__main__':
-    entry_point()

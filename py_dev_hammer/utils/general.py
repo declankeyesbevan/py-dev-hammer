@@ -5,6 +5,7 @@ General utilities.
 # pylint: disable=logging-fstring-interpolation, invalid-name, missing-docstring
 
 import logging
+import os
 
 import certifi
 import urllib3
@@ -31,5 +32,6 @@ def load_config_file(config_file):
 
 
 def get_certs():
-    pool_manager = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+    pool_manager = urllib3.PoolManager(
+        cert_reqs='CERT_REQUIRED', ca_certs=os.environ.get('CERTIFICATE_FILE', certifi.where()))
     return pool_manager.connection_pool_kw.get('ca_certs')
