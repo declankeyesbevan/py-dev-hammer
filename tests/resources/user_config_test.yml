@@ -5,11 +5,3 @@ code_build:
 aws_general:
   region_name: 'ap-southeast-2'
   verify: True
-s3:
-  bucket: 'aws-codestar-ap-southeast-2-297045966567-some-cool-name-pipe'
-markdown:
-  files:
-    - 'AUTHORS'
-    - 'CONTRIBUTING'
-    - 'HISTORY'
-    - 'README'

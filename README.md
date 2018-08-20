@@ -4,7 +4,6 @@
 When all you have is a hammer, everything looks like a dev.
 
 ## About
-
 Py Dev Hammer is a collection of tools to help in developing Python applications. 
 
 This pre-alpha release contains a single tool. It is a Continuous Integration helper which performs
@@ -78,7 +77,8 @@ You will be creating an IAM service role when configuring [CodeBuild](#codebuild
 
 ### Config
 Two configuration files are required for the scripts: `app` and `user`. Examples are located at
-`py_dev_hammer/examples/{type}_config.example.yml`.
+[`examples/app_config.example.yml`](examples/app_config.example.yml) and
+[`examples/user_config.example.yml`](examples/user_config.example.yml).
 
 #### App
 The example app config can be copied and used as is, however you may want to remove some of the test
@@ -115,15 +115,16 @@ This variable is used by CodeBuild:
 
 ## Usage
 Create a Python file to run the scripts from the command line via `buildspec.yml`. An example file
-can be found in `py_dev_hammer/examples/run_github_status_posting.py`.
+can be found in [`examples/run_github_status_posting.py`](examples/run_github_status_posting.py).
 
 To use CodeBuild with the above [AWS config](#codebuild), you will need to create a `buildspec.yml`
-file. An example file is located in `py_dev_hammer/examples/buildspec.yml`. The `build` section of
-that file is where you will call the [`tests_to_run`](#app).
+file. An example file is located in [`examples/buildspec.yml`](examples/buildspec.yml). The `build`
+section of that file is where you will call the [`tests_to_run`](#app).
 
 ## Road Map
 - Set up all AWS resources with CloudFormation (who wants to read this README?)
 - reStructuredText to Markdown converter (mostly already written)
 - Visualisation of the toolkit with dashboards (need more tools in the old toolkit first)
 - Dockerising things (that should be Dockerised)
+- Monitoring (comings and goings of electrons)
 - Other cool things I'm sure (fingers crossed)
