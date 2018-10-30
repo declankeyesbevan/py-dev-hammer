@@ -13,10 +13,11 @@ See [road map](#road-map) for further release plans. The first item is to use AW
 make most of this document redundant. As the project progresses this README will reference other
 READMEs instead of detailing everything.
 
-## Installation
-`pip install pydevhammer`
+## Requires
 
-## Pre-requisites
+    python3.6
+
+## Prerequisites
 Note: this guide attempts to keep specific references to third-party tools to a minimum as they are
 very likely to change. Use your intuition and please get in
 [contact](https://www.declankeyesbevan.com/contact) if there are glaring problems and/or you want to
@@ -112,6 +113,9 @@ These variables are used by the scripts of this project:
 This variable is used by CodeBuild:
 - TESTS_DIR=`$CODEBUILD_SRC_DIR/path/to/your/tests/results/dir`  
 (Note: this is the test directory for your project, not this project)
+
+## Installation
+`pip install pydevhammer`
 
 ## Usage
 Create a Python file to run the scripts from the command line via `buildspec.yml`. An example file
